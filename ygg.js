@@ -46,7 +46,7 @@ function showData(data) {
     ul.replaceChildren()
     data.forEach(d => {
 	const li = document.createElement("li");
-	li.textContent = `${d.id} ${d.name}`;
+	li.textContent = `${d[0]} ${d[1]}`;
 	ul.appendChild(li);
     });
 }
@@ -56,7 +56,7 @@ document.getElementById("filter")
 	const results = game_list
 	    .map(e => ({
 		element: e,
-		score: fuzzyMatch(e.name, event.target.value)
+		score: fuzzyMatch(e[1], event.target.value)
 	    }))
 	    .filter(e => e.score > 0.5)
 	    .sort((a, b) => b.score - a.score);
