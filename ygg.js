@@ -10,7 +10,7 @@ function levenshteinDistance(str1, str2) {
 
     const m = s1.length;
     const n = s2.length;
-    const t = Array(n + 1)
+    var t = Array(n + 1)
 
     var u = [], i = 0, j = 0;
 
