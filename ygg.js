@@ -8,23 +8,43 @@ function levenshteinDistance(str1, str2) {
     const s1 = str1.toLowerCase();
     const s2 = str2.toLowerCase();
 
-    const track = Array(s2.length + 1).fill(null).map(() =>
-	Array(s1.length + 1).fill(null));
+    const m = s1.length;
+    const n = s2.length;
+    const t = Array(n + 1)
 
-    for (let i = 0; i <= s1.length; i += 1) track[0][i] = i;
-    for (let j = 0; j <= s2.length; j += 1) track[j][0] = j;
+    var u = [], i = 0, j = 0;
 
-    for (let j = 1; j <= s2.length; j += 1) {
-	for (let i = 1; i <= s1.length; i += 1) {
-	    const indicator = s1[i - 1] === s2[j - 1] ? 0 : 1;
-	    track[j][i] = Math.min(
-		track[j][1 - 1][i] + 1, // Löschen
-		track[j][i - 1] + 1,    // Einfügen
-		track[j - 1][i - 1] + indicator // Ersetzen
-	    );
+    if (!m) return n;
+    if (!n) return m;
+
+    for (j = 0; j <= n; j++) t[j] = j;
+    for (i = 1; i <= m; i++) {
+	u = [i];
+	for (j = 1; j <= n; j++) {
+	    u[j] = s1[i - 1] === s2[j - 1] ? t[j - 1] : Math.min(t[j - 1], t[j], u[j - 1]) + 1;
 	}
+	t = u;
     }
-    return track[s2.length][s1.length];
+
+    return u[n];
+
+	//    const track = Array(s2.length + 1).fill(null).map(() =>
+	// Array(s1.length + 1).fill(null));
+	//
+	//    for (let i = 0; i <= s1.length; i += 1) track[0][i] = i;
+	//    for (let j = 0; j <= s2.length; j += 1) track[j][0] = j;
+	//
+	//    for (let j = 1; j <= s2.length; j += 1) {
+	// for (let i = 1; i <= s1.length; i += 1) {
+	//     const indicator = s1[i - 1] === s2[j - 1] ? 0 : 1;
+	//     track[j][i] = Math.min(
+	// 	track[j][1 - 1][i] + 1, // Löschen
+	// 	track[j][i - 1] + 1,    // Einfügen
+	// 	track[j - 1][i - 1] + indicator // Ersetzen
+	//     );
+	// }
+	//    }
+	//    return track[s2.length][s1.length];
 }
 
 /**
