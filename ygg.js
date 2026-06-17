@@ -53,6 +53,11 @@ function showData(data) {
 
 document.getElementById("filter")
     .addEventListener("input", event => {
+	if (event.target.value == "") {
+	    showData(game_list);
+	    return;
+	}
+
 	const results = game_list
 	    .map(e => ({
 		element: e,
@@ -60,7 +65,7 @@ document.getElementById("filter")
 	    }))
 	    .filter(e => e.score > 0.5)
 	    .sort((a, b) => b.score - a.score);
-	showData(results);
+	showData(results.map(e => e.element));
     });
 
 fetch("./ygg_db.json")
