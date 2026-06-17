@@ -64,8 +64,10 @@ document.getElementById("filter")
 		score: fuzzyMatch(e[1], event.target.value)
 	    }))
 	    .filter(e => e.score > 0.5)
-	    .sort((a, b) => b.score - a.score);
-	showData(results.map(e => e.element));
+	    .sort((a, b) => b.score - a.score)
+	    .map(e => e.element);
+	console.log(results)
+	showData(results);
     });
 
 fetch("./ygg_db.json")
