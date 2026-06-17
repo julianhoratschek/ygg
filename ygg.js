@@ -1,0 +1,72 @@
+let game_list = []
+
+/**
+ * Berechnet die Levenshtein-Distanz zwischen zwei Strings.
+ * (Wie viele Änderungen sind nötig, um von str1 zu str2 zu kommen?)
+ */
+function levenshteinDistance(str1, str2) {
+    const s1 = str1.toLowerCase();
+    const s2 = str2.toLowerCase();
+
+    const track = Array(s2.length + 1).fill(null).map(() =>
+	Array(s1.length + 1).fill(null));
+
+    for (let i = 0; i <= s1.length; i += 1) track[0][i] = i;
+    for (let j = 0; j <= s2.length; j += 1) track[j][0] = j;
+
+    for (let j = 1; j <= s2.length; j += 1) {
+	for (let i = 1; i <= s1.length; i += 1) {
+	    const indicator = s1[i - 1] === s2[j - 1] ? 0 : 1;
+	    track[j][i] = Math.min(
+		track[j][1 - 1][i] + 1, // Löschen
+		track[j][i - 1] + 1,    // Einfügen
+		track[j - 1][i - 1] + indicator // Ersetzen
+	    );
+	}
+    }
+    return track[s2.length][s1.length];
+}
+
+/**
+ * Berechnet die Ähnlichkeit in Prozent (0 bis 1).
+ * 1 bedeutet absolut identisch, 0 bedeutet komplett verschieden.
+ */
+function fuzzyMatch(str1, str2) {
+    const distance = levenshteinDistance(str1, str2);
+    const maxLength = Math.max(str1.length, str2.length);
+    
+    if (maxLength === 0) return 1.0; // Beide Strings sind leer
+    
+    // Prozentuale Ähnlichkeit berechnen
+    return 1 - (distance / maxLength);
+}
+
+function showData(data) {
+    const ul = document.getElementById("list");
+    ul.replaceChildren()
+    data.forEach(d => {
+	const li = document.createElement("li");
+	li.textContent = `${d.id} ${d.name}`;
+	ul.appendChild(li);
+    });
+}
+
+document.getElementById("filter")
+    .addEventListener("input", event => {
+	const results = game_list
+	    .map(e => ({
+		element: e,
+		score: fuzzyMatch(e.name, event.target.value)
+	    }))
+	    .filter(e => e.score > 0.5)
+	    .sort((a, b) => b.score - a.score);
+	showData(results);
+    });
+
+fetch("./ygg_db.json")
+    .then(r => r.json())
+    .then(data => {
+	game_list = data;
+	showData(data);
+    })
+    .catch(error => console.error("Fehler: ", error));
