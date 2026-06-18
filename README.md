@@ -1,34 +1,53 @@
 # ygg
 
-A board game browser for [Yggdrasil Café](https://yggdrasil.cafe), a board game café.
+A simple web app to browse the game library of [Yggdrasil Café](https://yggdrasil.cafe), a board game café.
 
-## How it works
+## Features
 
-- `ygg.py` scrapes the game list from the café's website and writes it to `ygg_db.json`
-- `index.html` + `ygg.js` load the JSON and render a searchable list in the browser
+- Game list fetched live from the café's website
+- Filter by name
+- Filter by player count using `p: <range>`
+- Responsive layout for mobile and desktop
 
-## Usage
+## Stack
 
-**Refresh the game database:**
+| Layer | Tech |
+|-------|------|
+| Backend | Python 3.14+, Flask |
+| Frontend | TypeScript → vanilla JS |
+| Server | Gunicorn (production) |
+
+## Setup
+
 ```sh
-python ygg.py
+uv sync
+uv run flask run
 ```
 
-**Browse games:**  
-Open `index.html` in a browser (requires a local server to fetch the JSON, e.g. `python -m http.server`).
+Open [http://localhost:5000](http://localhost:5000) in your browser.
 
-## Search
+**Production:**
 
-- Type a name to filter by game name
-- Use `p: <range>` to filter by player count — e.g. `p: 2-4`, `p: 4`, `p: 6+`
+```sh
+uv run gunicorn app:app
+```
 
-## Files
+## Search syntax
 
-| File | Purpose |
-|------|---------|
-| `ygg.py` | Scraper — fetches and parses the café's game table |
-| `ygg_db.json` | Cached game data |
-| `ygg.ts` | TypeScript source for the frontend |
-| `ygg.js` | Compiled JS (served to the browser) |
-| `index.html` | Frontend entry point |
-| `style.css` | Styles |
+| Query | Result |
+|-------|--------|
+| `catan` | Games with "catan" in the name |
+| `p: 4` | Games that support exactly 4 players |
+| `p: 2-4` | Games supporting a 2–4 player range |
+| `p: 6+` | Games for 6 or more players |
+| `catan p: 2-4` | Name and player count combined |
+
+## Project structure
+
+```
+app.py                  Flask server — scrapes /spieleauswahl, serves /api/data
+templates/index.html    Frontend entry point (Jinja2)
+static/js/ygg.ts        TypeScript source
+static/js/ygg.js        Compiled JS (served to browser)
+static/css/style.css    Styles
+```
