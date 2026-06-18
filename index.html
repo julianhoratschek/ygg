@@ -8,7 +8,11 @@
 
 <body>
     <div class="filter-container">
-	<input id="filter" type="text" placeholder="Suchen..." />
+	<div class="filter-wrapper">
+	    <input id="filter" type="text" placeholder="Suchen..." />
+	    <p class="filter-hint">Enter Search term. Use <span class="hint-accent">"p: [range]"</span> to search for player count.</p>
+	    <p class="filter-hint"><span class="hint-accent">"range"</span> can be anything like <span class="hint-accent">"1-4", "4", "3-5+", "6+"</span></p>
+	</div>
     </div>
     <ul id="list" class="game_data">
     </ul>

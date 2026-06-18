@@ -15,24 +15,31 @@
 /* Container sorgt für die Zentrierung über der Liste */
 .filter-container {
   display: flex;
-  justify-content: center; /* Zentriert das Input horizontal */
+  justify-content: center; /* Zentriert den Inhalt horizontal */
   width: 100%;
   margin: 20px 0 30px 0;   /* 20px Platz nach oben, 30px Abstand zur Liste */
 }
 
+/* NEU: Hält Input und Hint untereinander und begrenzt die Breite */
+.filter-wrapper {
+  display: flex;
+  flex-direction: column;  /* Zwingt den Text unter das Input-Feld */
+  width: 100%;
+  max-width: 500px;        /* Entspricht der max-width deines Inputs */
+}
+
 /* Das grafisch aufbereitete Input-Element */
 #filter {
-  width: 100%;
-  max-width: 500px;        /* Verhindert, dass das Feld auf Desktop zu breit wird */
-  padding: 12px 16px;      /* Angenehmes Innenmaß für Textfreiheit */
-  font-size: 16px;         /* Verhindert automatisches Herein-Zoomen auf iOS-Geräten */
-  border: 2px solid #ddd;  /* Subtiler Rahmen */
-  border-radius: 8px;      /* Moderne, leicht abgerundete Ecken */
+  width: 100%;             /* Nutzt jetzt die vollen 100% des Wrappers (max 500px) */
+  padding: 12px 16px;      
+  font-size: 16px;         
+  border: 2px solid #ddd;  
+  border-radius: 8px;      
   background-color: #fff;
   color: #333;
-  outline: none;           /* Entfernt den hässlichen Standard-Browser-Rahmen */
-  transition: all 0.25s ease; /* Macht den Fokus-Wechsel geschmeidig */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Minimaler Tiefeneffekt */
+  outline: none;           
+  transition: all 0.25s ease; 
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); 
 }
 
 /* Platzhalter-Text stylen */
@@ -42,8 +49,20 @@
 
 /* Visuelles Feedback, wenn der Nutzer in das Feld klickt */
 #filter:focus {
-  border-color: #0066cc;   /* Rahmen wird blau (oder deine Wunschfarbe) */
-  box-shadow: 0 4px 12px rgba(0, 102, 204, 0.15); /* Weicher, blauer Glüheffekt */
+  border-color: #0066cc;   
+  box-shadow: 0 4px 12px rgba(0, 102, 204, 0.15); 
+}
+
+/* NEU: Styling für den erklärenden Text */
+.filter-hint {
+  font-size: 13px;         /* Etwas kleiner als der Haupttext für eine klare Hierarchie */
+  color: #767676;          /* Gut lesbares, barrierefreies Hellgrau (erfüllt WCAG-Kontrast) */
+  margin: 6px 0 0 4px;     /* Minimaler Abstand nach oben und leichter Einzug nach rechts */
+  line-height: 1.4;        /* Angenehmer Zeilenabstand */
+}
+
+.hint-accent {
+    color: #4466cc;
 }
 
 /* Versteckt die Kopfzeile auf dem Handy, da das Spaltenlayout dort 
