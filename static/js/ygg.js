@@ -24,7 +24,8 @@ class OpenRange {
         return leftValid && rightValid;
     }
     toString() {
-        return `${this.min} - ${this.max}${(this.open & OpenType.Right) !== 0 ? '+' : ''}`;
+        const more = (this.open & OpenType.Right) !== 0 ? '+' : '';
+        return `${this.min} - ${this.max}${more}`;
     }
     static fromString(s) {
         let st = s.trim();
@@ -36,31 +37,34 @@ class OpenRange {
     }
 }
 let gameList = [];
+function createListElement(id, name, cnt) {
+    const li = document.createElement("li");
+    const idSpan = document.createElement("span");
+    idSpan.className = "game-id";
+    idSpan.textContent = id;
+    const nameSpan = document.createElement("span");
+    nameSpan.className = "game-name";
+    nameSpan.textContent = name;
+    const playersSpan = document.createElement("span");
+    playersSpan.className = "game-players";
+    playersSpan.textContent = cnt;
+    li.append(idSpan, nameSpan, playersSpan);
+    return li;
+}
 function displayGameList(data) {
     const ul = document.getElementById("list");
     if (!ul)
         return;
     ul.replaceChildren();
     const fragment = document.createDocumentFragment();
-    data.forEach(d => {
-        const li = document.createElement("li");
-        const idSpan = document.createElement("span");
-        idSpan.className = "game_id";
-        idSpan.textContent = d.id;
-        const nameSpan = document.createElement("span");
-        nameSpan.className = "game_name";
-        nameSpan.textContent = d.name;
-        const playersSpan = document.createElement("span");
-        playersSpan.className = "game_players";
-        playersSpan.textContent = d.players.toString();
-        li.append(idSpan, nameSpan, playersSpan);
-        fragment.appendChild(li);
-    });
+    const header = createListElement("Nr", "Name", "Spieler");
+    header.className = "list-header";
+    fragment.appendChild(header);
+    data.forEach(d => fragment.appendChild(createListElement(d.id, d.name, d.players.toString())));
     ul.appendChild(fragment);
 }
 async function loadGameList() {
     try {
-        // const response = await fetch("./ygg_db.json");
         const response = await fetch("/api/data");
         if (!response.ok)
             throw new Error(`HTTP Error! ${response.statusText}`);
@@ -91,7 +95,6 @@ filterInput?.addEventListener("input", event => {
         displayList = displayList.filter(e => e.players.contains(range));
         value = value.replace(playersPattern, "");
     }
-    // const re = new RegExp(value, "i");
     displayGameList(displayList.filter(e => e.name.toLowerCase().includes(value)));
 });
 async function init() {

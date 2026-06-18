@@ -8,27 +8,29 @@ enum OpenType {
 
 class OpenRange {
     constructor(
-	public min: number,
-	public max: number,
+	public min : number,
+	public max : number,
 	public open: OpenType = OpenType.Closed) {}
 
     contains(other: number | OpenRange): boolean {
-	const isRange = other instanceof OpenRange;
-	const left    = isRange ? other.min : other;
-	const right   = isRange ? other.max : other;
+	const isRange    = other instanceof OpenRange;
+	const left       = isRange ? other.min : other;
+	const right      = isRange ? other.max : other;
 
-	const leftValid = (this.open & OpenType.Left) !== 0 || this.min <= left;
+	const leftValid  = (this.open & OpenType.Left ) !== 0 || this.min <= left;
 	const rightValid = (this.open & OpenType.Right) !== 0 || this.max >= right;
 
 	return leftValid && rightValid;
     }
 
     toString(): string {
-	return `${this.min} - ${this.max}${(this.open & OpenType.Right) !== 0 ? '+' : ''}`;
+	const more = (this.open & OpenType.Right) !== 0 ? '+' : '';
+
+	return `${this.min} - ${this.max}${more}`;
     }
 
     static fromString(s: string): OpenRange {
-	let st = s.trim();
+	let st   = s.trim();
 	let open = st.at(-1) == '+' ? OpenType.Right : OpenType.Closed;
 	let nums = (st.match(/\d+/g) || []).map(Number).sort();
 
@@ -40,23 +42,44 @@ class OpenRange {
 
 
 interface GameEntry {
-    id: string;
-    name: string;
-    lang: string;
+    id     : string;
+    name   : string;
+    lang   : string;
     players: OpenRange
 }
 
 
 interface GameEntryDTO extends Omit<GameEntry, "players"> {
-    players: {
-	min: number;
-	max: number;
+    players : {
+	min : number;
+	max : number;
 	open: number;
     };
 }
 
 
 let gameList: GameEntry[] = []
+
+
+function createListElement(id: string, name: string, cnt: string): HTMLLIElement {
+    const li = document.createElement("li");
+
+    const idSpan = document.createElement("span");
+    idSpan.className = "game-id";
+    idSpan.textContent = id;
+
+    const nameSpan = document.createElement("span");
+    nameSpan.className = "game-name";
+    nameSpan.textContent = name;
+
+    const playersSpan = document.createElement("span");
+    playersSpan.className = "game-players";
+    playersSpan.textContent = cnt;
+
+    li.append(idSpan, nameSpan, playersSpan);
+
+    return li;
+}
 
 function displayGameList(data: GameEntry[]) {
     const ul = document.getElementById("list");
@@ -67,25 +90,14 @@ function displayGameList(data: GameEntry[]) {
     ul.replaceChildren()
 
     const fragment = document.createDocumentFragment();
+    const header   = createListElement("Nr", "Name", "Spieler");
 
-    data.forEach(d => {
-	const li = document.createElement("li");
+    header.className = "list-header";
+    fragment.appendChild(header);
 
-	const idSpan = document.createElement("span");
-	idSpan.className = "game_id";
-	idSpan.textContent = d.id;
-
-	const nameSpan = document.createElement("span");
-	nameSpan.className = "game_name";
-	nameSpan.textContent = d.name;
-
-	const playersSpan = document.createElement("span");
-	playersSpan.className = "game_players";
-	playersSpan.textContent = d.players.toString();
-
-	li.append(idSpan, nameSpan, playersSpan);
-	fragment.appendChild(li);
-    });
+    data.forEach(d => 
+	fragment.appendChild(
+	    createListElement(d.id, d.name, d.players.toString())));
 
     ul.appendChild(fragment);
 }
@@ -93,7 +105,6 @@ function displayGameList(data: GameEntry[]) {
 
 async function loadGameList(): Promise<GameEntry[]> {
     try {
-	// const response = await fetch("./ygg_db.json");
 	const response = await fetch("/api/data");
 
 	if (!response.ok)
@@ -103,7 +114,10 @@ async function loadGameList(): Promise<GameEntry[]> {
 
 	return data.map(entry => ({
 	    ...entry,
-	    players: new OpenRange(entry.players.min, entry.players.max, entry.players.open)
+	    players: new OpenRange(
+		entry.players.min,
+		entry.players.max,
+		entry.players.open)
 	}));
     }
     catch (err) {
@@ -116,7 +130,7 @@ const filterInput = document.getElementById("filter") as HTMLInputElement | null
 
 filterInput?.addEventListener("input", event => {
     const target = event.target as HTMLInputElement;
-    let value = target.value.toLowerCase();
+    let value    = target.value.toLowerCase();
 
     if (value == "") {
 	displayGameList(gameList);
@@ -124,9 +138,9 @@ filterInput?.addEventListener("input", event => {
     }
 
     const playersPattern = /\s*p:\s*([\d\-\s\+]+)/i
-    const players = value.match(playersPattern)
+    const players        = value.match(playersPattern)
 
-    let displayList = gameList;
+    let displayList      = gameList;
 
     if (players) {
 	const range = OpenRange.fromString(players[1]);
@@ -135,7 +149,6 @@ filterInput?.addEventListener("input", event => {
 	value = value.replace(playersPattern, "")
     }
 
-    // const re = new RegExp(value, "i");
     displayGameList(displayList.filter(e => e.name.toLowerCase().includes(value)));
 });
 

@@ -8,7 +8,19 @@ from enum import IntFlag
 
 from flask import Flask, jsonify, render_template
 
+
 app = Flask(__name__)
+
+
+ENTRY_PATTERN = re.compile(
+    r"<tr[^>]+>\s*"
+    r"<td[^>]+>(?P<id>[^<]+).*?</td>\s*"
+    r"<td[^>]+>(?P<name>[^<]+).*?</td>\s*"
+    r"<td[^>]+>(?P<lang>[^<]+).*?</td>\s*"
+    r"<td[^>]+>(?P<cnt>[^<]+).*?</td>\s*"
+    r"</tr>", re.DOTALL
+)
+
 
 class OpenType(IntFlag):
     Closed = 0
@@ -17,23 +29,11 @@ class OpenType(IntFlag):
     Both   = 3
 
 
+@dataclass
 class Range:
-    def __init__(self, min_num: int, max_num: int, open_type: OpenType = OpenType.Closed):
-        self.min : int      = min_num
-        self.max : int      = max_num
-        self.open: OpenType = open_type
-
-    def __contains__(self, other: int | Range):
-        if self.open == OpenType.Both:
-            return True
-
-        if isinstance(other, Range):
-            left, right = other.min, other.max
-        else:
-            left, right = other, other
-
-        return (OpenType.Left in self.open or self.min <= left)\
-            and (OpenType.Right in self.open or self.max >= right)
+    min : int
+    max : int
+    open: OpenType = OpenType.Closed
 
     def to_json(self) -> dict[str, int]:
         return { "min": self.min, "max": self.max, "open": self.open}
@@ -70,7 +70,6 @@ class Entry:
 
 
 def read_site() -> str:
-    res = None
     try:
         res = url.urlopen("https://yggdrasil.cafe/pages/spieleauswahl")
         if isinstance(res, HTTPResponse):
@@ -78,16 +77,6 @@ def read_site() -> str:
     except URLError:
         pass
     return ""
-
-
-ENTRY_PATTERN = re.compile(
-    r"<tr[^>]+>\s*"
-    r"<td[^>]+>(?P<id>[^<]+).*?</td>\s*"
-    r"<td[^>]+>(?P<name>[^<]+).*?</td>\s*"
-    r"<td[^>]+>(?P<lang>[^<]+).*?</td>\s*"
-    r"<td[^>]+>(?P<cnt>[^<]+).*?</td>\s*"
-    r"</tr>", re.DOTALL
-)
 
 
 @app.route("/")
@@ -110,6 +99,6 @@ def data():
         Range.from_str(tr["cnt"]))
         for tr in ENTRY_PATTERN.finditer(table[0])]
 
-    return jsonify([e.to_json() for e in db])
+    return jsonify([e.to_json() for e in db[1:]])
 
 

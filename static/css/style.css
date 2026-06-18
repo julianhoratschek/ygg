@@ -1,11 +1,11 @@
-.game_data {
+.game-data {
   list-style: none;
   padding: 0;
   margin: 0;
   width: 100%;
 }
 
-.game_data li {
+.game-data li {
   display: grid;
   gap: 8px;
   padding: 12px;
@@ -20,12 +20,11 @@
   margin: 20px 0 30px 0;   /* 20px Platz nach oben, 30px Abstand zur Liste */
 }
 
-/* NEU: Hält Input und Hint untereinander und begrenzt die Breite */
 .filter-wrapper {
   display: flex;
   flex-direction: column;  /* Zwingt den Text unter das Input-Feld */
   width: 100%;
-  max-width: 500px;        /* Entspricht der max-width deines Inputs */
+  max-width: 500px;
 }
 
 /* Das grafisch aufbereitete Input-Element */
@@ -42,23 +41,20 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); 
 }
 
-/* Platzhalter-Text stylen */
 #filter::placeholder {
   color: #aaa;
 }
 
-/* Visuelles Feedback, wenn der Nutzer in das Feld klickt */
 #filter:focus {
   border-color: #0066cc;   
   box-shadow: 0 4px 12px rgba(0, 102, 204, 0.15); 
 }
 
-/* NEU: Styling für den erklärenden Text */
 .filter-hint {
-  font-size: 13px;         /* Etwas kleiner als der Haupttext für eine klare Hierarchie */
+  font-size: 13px;
   color: #767676;          /* Gut lesbares, barrierefreies Hellgrau (erfüllt WCAG-Kontrast) */
-  margin: 6px 0 0 4px;     /* Minimaler Abstand nach oben und leichter Einzug nach rechts */
-  line-height: 1.4;        /* Angenehmer Zeilenabstand */
+  margin: 6px 0 0 4px;
+  line-height: 1.4;
 }
 
 .hint-accent {
@@ -67,76 +63,48 @@
 
 /* Versteckt die Kopfzeile auf dem Handy, da das Spaltenlayout dort 
    aufgebrochen wird und die Beschriftung sonst keinen Sinn mehr ergibt */
-/* .liste-header { */
-/*   display: none !important; */
-/* } */
+.list-header {
+  display: none !important;
+}
 
 
 @media (max-width: 599px) {
-  .game_data li {
+  .game-data li {
     /* 2 Spalten: ID links, Spieleranzahl rechts */
     grid-template-columns: auto 1fr;
   }
 
   /* Der Name bricht in die nächste Zeile um und streckt sich über beide Spalten */
-  .game_data .game_name {
+  .game-data .game-name {
     grid-column: span 2;
     font-weight: 500;
     color: #333;
   }
 
-  /* Die Spieleranzahl rechtsbündig ausrichten */
-  .game_data .game_players {
+  .game-data .game-players {
     text-align: right;
     color: #666;
   }
   
-  .game_data .game_id {
+  .game-data .game-id {
     color: #888;
   }
 }
 
 @media (min-width: 600px) {
   /* Kopfzeile auf großen Bildschirmen wieder anzeigen */
-  /* .liste-header { */
-  /*   display: grid !important; */
-  /*   font-weight: bold; */
-  /*   background-color: #f5f5f5; */
-  /*   border-bottom: 2px solid #ccc !important; */
-  /* } */
+  .list-header {
+    display: grid !important;
+    font-weight: bold;
+    background-color: #f5f5f5;
+    border-bottom: 2px solid #ccc !important;
+  }
 
-  .game_data li {
-    /* Das alte 3-Spalten-Layout von eben */
+  .game-data li {
     grid-template-columns: 80px 1fr 100px;
   }
 
-  .game_data .game_count {
-    text-align: left; /* Auf Desktop wieder normal linksbündig */
+  .game-data .game-count {
+    text-align: left;
   }
 }
-
-/* ul.game_data { */
-/*   list-style: none; /* Entfernt die Standard-Aufzählungspunkte */ */
-/*   padding: 0; */
-/*   margin: 0; */
-/*   width: 100%; */
-/*   max-width: 600px; /* Optionale Gesamtbreite */ */
-/* } */
-/**/
-/* /* Jedes Listenelement wird zu einer Grid-Zeile */ */
-/* ul.game_data li { */
-/*   display: grid; */
-/*   /* Definiert 3 Spalten mit fester Größe:  */
-/*      ID = 80px, Name nimmt den restlichen Platz (1fr), Count = 100px */ */
-/*   grid-template-columns: 80px 1fr 100px; */
-/*   gap: 10px; /* Abstand zwischen den Spalten */ */
-/*   padding: 10px; */
-/*   border-bottom: 1px solid #eee; */
-/* } */
-
-/* Styling für die Kopfzeile */
-/* .liste-header { */
-/*   font-weight: bold; */
-/*   background-color: #f5f5f5; */
-/*   border-bottom: 2px solid #ccc !important; */
-/* } */
