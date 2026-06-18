@@ -1,0 +1,123 @@
+.game_data {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.game_data li {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+}
+
+/* Container sorgt für die Zentrierung über der Liste */
+.filter-container {
+  display: flex;
+  justify-content: center; /* Zentriert das Input horizontal */
+  width: 100%;
+  margin: 20px 0 30px 0;   /* 20px Platz nach oben, 30px Abstand zur Liste */
+}
+
+/* Das grafisch aufbereitete Input-Element */
+#filter {
+  width: 100%;
+  max-width: 500px;        /* Verhindert, dass das Feld auf Desktop zu breit wird */
+  padding: 12px 16px;      /* Angenehmes Innenmaß für Textfreiheit */
+  font-size: 16px;         /* Verhindert automatisches Herein-Zoomen auf iOS-Geräten */
+  border: 2px solid #ddd;  /* Subtiler Rahmen */
+  border-radius: 8px;      /* Moderne, leicht abgerundete Ecken */
+  background-color: #fff;
+  color: #333;
+  outline: none;           /* Entfernt den hässlichen Standard-Browser-Rahmen */
+  transition: all 0.25s ease; /* Macht den Fokus-Wechsel geschmeidig */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Minimaler Tiefeneffekt */
+}
+
+/* Platzhalter-Text stylen */
+#filter::placeholder {
+  color: #aaa;
+}
+
+/* Visuelles Feedback, wenn der Nutzer in das Feld klickt */
+#filter:focus {
+  border-color: #0066cc;   /* Rahmen wird blau (oder deine Wunschfarbe) */
+  box-shadow: 0 4px 12px rgba(0, 102, 204, 0.15); /* Weicher, blauer Glüheffekt */
+}
+
+/* Versteckt die Kopfzeile auf dem Handy, da das Spaltenlayout dort 
+   aufgebrochen wird und die Beschriftung sonst keinen Sinn mehr ergibt */
+/* .liste-header { */
+/*   display: none !important; */
+/* } */
+
+
+@media (max-width: 599px) {
+  .game_data li {
+    /* 2 Spalten: ID links, Spieleranzahl rechts */
+    grid-template-columns: auto 1fr;
+  }
+
+  /* Der Name bricht in die nächste Zeile um und streckt sich über beide Spalten */
+  .game_data .game_name {
+    grid-column: span 2;
+    font-weight: 500;
+    color: #333;
+  }
+
+  /* Die Spieleranzahl rechtsbündig ausrichten */
+  .game_data .game_players {
+    text-align: right;
+    color: #666;
+  }
+  
+  .game_data .game_id {
+    color: #888;
+  }
+}
+
+@media (min-width: 600px) {
+  /* Kopfzeile auf großen Bildschirmen wieder anzeigen */
+  /* .liste-header { */
+  /*   display: grid !important; */
+  /*   font-weight: bold; */
+  /*   background-color: #f5f5f5; */
+  /*   border-bottom: 2px solid #ccc !important; */
+  /* } */
+
+  .game_data li {
+    /* Das alte 3-Spalten-Layout von eben */
+    grid-template-columns: 80px 1fr 100px;
+  }
+
+  .game_data .game_count {
+    text-align: left; /* Auf Desktop wieder normal linksbündig */
+  }
+}
+
+/* ul.game_data { */
+/*   list-style: none; /* Entfernt die Standard-Aufzählungspunkte */ */
+/*   padding: 0; */
+/*   margin: 0; */
+/*   width: 100%; */
+/*   max-width: 600px; /* Optionale Gesamtbreite */ */
+/* } */
+/**/
+/* /* Jedes Listenelement wird zu einer Grid-Zeile */ */
+/* ul.game_data li { */
+/*   display: grid; */
+/*   /* Definiert 3 Spalten mit fester Größe:  */
+/*      ID = 80px, Name nimmt den restlichen Platz (1fr), Count = 100px */ */
+/*   grid-template-columns: 80px 1fr 100px; */
+/*   gap: 10px; /* Abstand zwischen den Spalten */ */
+/*   padding: 10px; */
+/*   border-bottom: 1px solid #eee; */
+/* } */
+
+/* Styling für die Kopfzeile */
+/* .liste-header { */
+/*   font-weight: bold; */
+/*   background-color: #f5f5f5; */
+/*   border-bottom: 2px solid #ccc !important; */
+/* } */

@@ -4,7 +4,7 @@ import urllib.request as url
 
 import re
 import json
-from typing import NamedTuple
+from dataclasses import dataclass
 from enum import IntFlag
 from pathlib import Path
 
@@ -55,11 +55,20 @@ class Range:
         return cls(min_num, max_num, o)
 
 
-class Entry(NamedTuple):
+@dataclass
+class Entry:
     id     : str
     name   : str
     lang   : str
     players: Range
+
+    def to_json(self) -> dict[str, str | dict[str, int]]:
+        return { 
+            "id"     : self.id,
+            "name"   : self.name,
+            "lang"   : self.lang,
+            "players": self.players.to_json()
+        }
 
 
 def read_site() -> str:
@@ -84,7 +93,7 @@ ENTRY_PATTERN = re.compile(
 
 
 def json_encode(obj):
-    if isinstance(obj, Range):
+    if isinstance(obj, Entry):
         return obj.to_json()
     raise TypeError("Cannot serialize")
 
@@ -106,7 +115,6 @@ if __name__ == "__main__":
 
     with Path("ygg_db.json").open("w+") as fl:
         json.dump(db, fl, default=json_encode)
-
 
 
 
