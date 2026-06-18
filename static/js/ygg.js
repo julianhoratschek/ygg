@@ -60,7 +60,8 @@ function displayGameList(data) {
 }
 async function loadGameList() {
     try {
-        const response = await fetch("./ygg_db.json");
+        // const response = await fetch("./ygg_db.json");
+        const response = await fetch("/api/data");
         if (!response.ok)
             throw new Error(`HTTP Error! ${response.statusText}`);
         const data = await response.json();
@@ -87,7 +88,6 @@ filterInput?.addEventListener("input", event => {
     let displayList = gameList;
     if (players) {
         const range = OpenRange.fromString(players[1]);
-        console.log(range.toString());
         displayList = displayList.filter(e => e.players.contains(range));
         value = value.replace(playersPattern, "");
     }

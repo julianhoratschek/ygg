@@ -3,11 +3,12 @@ from urllib.error import URLError
 import urllib.request as url
 
 import re
-import json
 from dataclasses import dataclass
 from enum import IntFlag
-from pathlib import Path
 
+from flask import Flask, jsonify, render_template
+
+app = Flask(__name__)
 
 class OpenType(IntFlag):
     Closed = 0
@@ -33,9 +34,6 @@ class Range:
 
         return (OpenType.Left in self.open or self.min <= left)\
             and (OpenType.Right in self.open or self.max >= right)
-
-    def __str__(self) -> str:
-        return f"{self.min}-{self.max}"
 
     def to_json(self) -> dict[str, int]:
         return { "min": self.min, "max": self.max, "open": self.open}
@@ -92,19 +90,18 @@ ENTRY_PATTERN = re.compile(
 )
 
 
-def json_encode(obj):
-    if isinstance(obj, Entry):
-        return obj.to_json()
-    raise TypeError("Cannot serialize")
+@app.route("/")
+def index():
+    return render_template("index.html")
 
 
-if __name__ == "__main__":
+@app.route("/api/data")
+def data():
     html = read_site()
     table = re.search("<table[^>]+(.*)</table>", html, re.DOTALL)
 
     if table is None:
-        print("no table found")
-        exit(0)
+        return jsonify({})
 
     db = [Entry(
         tr["id"],
@@ -113,8 +110,6 @@ if __name__ == "__main__":
         Range.from_str(tr["cnt"]))
         for tr in ENTRY_PATTERN.finditer(table[0])]
 
-    with Path("ygg_db.json").open("w+") as fl:
-        json.dump(db, fl, default=json_encode)
-
+    return jsonify([e.to_json() for e in db])
 
 

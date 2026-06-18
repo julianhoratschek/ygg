@@ -93,7 +93,9 @@ function displayGameList(data: GameEntry[]) {
 
 async function loadGameList(): Promise<GameEntry[]> {
     try {
-	const response = await fetch("./ygg_db.json");
+	// const response = await fetch("./ygg_db.json");
+	const response = await fetch("/api/data");
+
 	if (!response.ok)
 	    throw new Error(`HTTP Error! ${response.statusText}`);
 
@@ -128,7 +130,7 @@ filterInput?.addEventListener("input", event => {
 
     if (players) {
 	const range = OpenRange.fromString(players[1]);
-	console.log(range.toString());
+
 	displayList = displayList.filter(e => e.players.contains(range))
 	value = value.replace(playersPattern, "")
     }
